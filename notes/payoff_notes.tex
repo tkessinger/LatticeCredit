@@ -1,0 +1,73 @@
+\documentclass[14pt, a4paper, justified]{article}
+
+\usepackage{amsfonts,latexsym,amsthm,amssymb,amsmath,amscd,euscript}
+\usepackage{fullpage}
+\usepackage{hyperref}
+\usepackage{mathtools}
+\usepackage[utopia]{mathdesign}
+\usepackage{natbib}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage[usenames,dvipsnames]{pstricks}
+
+\usepackage{hyperref}
+\hypersetup{
+    pdffitwindow=false,            % window fit to page
+    pdfstartview={Fit},            % fits width of page to window
+    pdftitle={Spatial replicator equation notes},     % document title
+    pdfauthor={Taylor Kessinger},         % author name
+    pdfsubject={},                 % document topic(s)
+    pdfnewwindow=true,             % links in new window
+    colorlinks=true,               % coloured links, not boxed
+    linkcolor=OrangeRed,      % colour of internal links
+    citecolor=ForestGreen,       % colour of links to bibliography
+    filecolor=Orchid,            % colour of file links
+    urlcolor=Cerulean           % colour of external links
+}
+
+\begin{document}
+
+\section*{Payoffs}
+
+Following is a summary of the payoffs for \texttt{LatticeCredit}, which is tentatively what I'm calling this project.
+
+Individuals play a public goods game with each of their neighbors.
+Prior to the public goods game, however, they can lend money to each other.
+Individuals then invest all their money in the PGG.
+After the PGG, they can repay the loan with interest.
+Payoffs are accumulated thusly.
+
+Individuals can have strategies along three axes: cooperate/defect in the PGG, lend/hoard money, and payback/shirk loan obligations.
+We can eventually consider what happens to individuals when reputation tracking is implemented along any of these axes, how individuals should update their strategies, and what happens when these axes are correlated (we might envision that defectors would be more likely to shirk).
+
+Assume lenders always lend to all of their neighbors and shirkers never repay anything.
+Let's break down the payoffs.
+Assume $m$ is the amount of money everyone initially has, $k$ is the network degree, and $m > k$ (so nobody goes bankrupt as a result of loans).
+First, the focal individual lends out $k\delta_{tl}$ to their $k$ neighbors, so they lose that amount (and their neighbors gain that amount).
+Here $\delta_{tl}$ is an indicator variable for whether the focal individual's strategy $t$ contains $l$ or not (the ``t'' means ``tactic'' and distinguishes from ``shirk'' in the payback step).
+Next, the individual receives $\sum_{i=1}^k \delta_{t_i l}$ money from their neighbors (and their neighbors each lose that amount).
+The whole group then plays the PGG.
+The focal individual contributes $\delta_{tc} (m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l})$ to the PGG.
+Each neighbor then contributes $\delta_{t_i c} (m + \delta_{tl} - \delta_{t_i l})$ to the game.
+So the total payoffs should be
+\begin{equation}
+    P_s = \frac{r[\delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}) + \sum_{i=1}^k \delta_{t_i c} (m + \delta_{tl} - \delta_{t_i l})]}{k} - \delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}).
+\end{equation}
+We could also fix it so that other individuals don't necessarily invest all their money in this step.
+Really, the only reason we need worry about $m$ at all is because individuals could in principle lend themselves into bankruptcy, which would be bad; worse yet, they could lend themselves into debt (to whom?), and then their contribution to the PGG would be negative.
+We could also back up and simply give everyone one or two units of money to invest: in that case, maybe the focal individual can only choose one neighbor to lend to.
+
+Next, we need to figure out how the lending step works.
+Let $z$ (from German ``Zins'', meaning ``interest'') be the interest rate (or, more properly, $1$ plus the interest rate).
+If the focal individual lent money to a neighbor $i$, they should receive $z \delta_{t_i p}$ in return (with $p$ meaning ``payback'').
+So it seems the payoff adjustment is pretty simple.
+The focal individual should get $z\delta_{tl} \delta_{t_i p}$ back in the payback step and lose $z \delta_{tp} \delta_{t_i l}$ by paying back loans to neighbors who lent to them (and everyone's payoffs should increase by the corresponding amount.
+I think we can thus write down the overall payoff:
+\begin{equation}
+    P_s = \frac{r[\delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}) + \sum_{i=1}^k \delta_{t_i c} (m + \delta_{tl} - \delta_{t_i l})]}{k} - \delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}) + z(\sum_{i=1}^k \delta_{tl} \delta_{t_i p} - \delta_{tp} \delta_{t_i l}).
+\end{equation}
+This should allow us to fully populate the $8 \times 8$ payoff ``matrix''.
+
+\bibliographystyle{plainnat}
+\bibliography{notes_bib}
+\end{document}
