@@ -84,7 +84,7 @@ function get_payoffs(
     # defectors invest none
     # we of course have to remember to subtract the focal individual's contribution
     # if they are a cooperator
-    payoff += (r*(coop*money + sum(neighbor_money' * neighbor_strats[:,1]))/k - coop)
+    payoff += (r*(coop*money + sum(neighbor_money' * neighbor_strats[:,1]))/(k+1) - coop)
     println("payoff is $payoff")
 
     # do the payback step

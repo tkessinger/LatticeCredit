@@ -51,7 +51,7 @@ The focal individual contributes $\delta_{tc} (m - k\delta_{tl} + \sum_{i=1}^k \
 Each neighbor then contributes $\delta_{t_i c} (m + \delta_{tl} - \delta_{t_i l})$ to the game.
 So the total payoffs should be
 \begin{equation}
-    P_s = \frac{r[\delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}) + \sum_{i=1}^k \delta_{t_i c} (m + \delta_{tl} - \delta_{t_i l})]}{k} - \delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}).
+    P_s = \frac{r[\delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}) + \sum_{i=1}^k \delta_{t_i c} (m + \delta_{tl} - \delta_{t_i l})]}{k+1} - \delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}).
 \end{equation}
 We could also fix it so that other individuals don't necessarily invest all their money in this step.
 Really, the only reason we need worry about $m$ at all is because individuals could in principle lend themselves into bankruptcy, which would be bad; worse yet, they could lend themselves into debt (to whom?), and then their contribution to the PGG would be negative.
@@ -64,7 +64,7 @@ So it seems the payoff adjustment is pretty simple.
 The focal individual should get $z\delta_{tl} \delta_{t_i p}$ back in the payback step and lose $z \delta_{tp} \delta_{t_i l}$ by paying back loans to neighbors who lent to them (and everyone's payoffs should increase by the corresponding amount.
 I think we can thus write down the overall payoff:
 \begin{equation}
-    P_s = \frac{r[\delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}) + \sum_{i=1}^k \delta_{t_i c} (m + \delta_{tl} - \delta_{t_i l})]}{k} - \delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}) + z\sum_{i=1}^k (\delta_{tl} \delta_{t_i p} - \delta_{tp} \delta_{t_i l}).
+    P_s = \frac{r[\delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}) + \sum_{i=1}^k \delta_{t_i c} (m + \delta_{tl} - \delta_{t_i l})]}{k+1} - \delta_{tc}(m - k\delta_{tl} + \sum_{i=1}^k \delta_{t_i l}) + z\sum_{i=1}^k (\delta_{tl} \delta_{t_i p} - \delta_{tp} \delta_{t_i l}).
 \end{equation}
 This should allow us to fully populate the $8 \times 8$ payoff ``matrix''.
 
