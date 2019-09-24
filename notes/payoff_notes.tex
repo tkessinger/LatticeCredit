@@ -68,6 +68,26 @@ I think we can thus write down the overall payoff:
 \end{equation}
 This should allow us to fully populate the $8 \times 8$ payoff ``matrix''.
 
+Let's back up and break this down even further.
+In a standard PGG, an individual contributes $\delta_{tc}$ to the common pool.
+They then receive a payoff $\frac{r[\delta_{tc} + \sum_{i=1}^k \delta_{t_i c}]}{k+1}$ from the common pool.
+The total payoff to each individual is thus
+\begin{equation}
+    P_s = \frac{r[\delta_{tc} + \sum_{i=1}^k \delta_{t_i c}]}{k+1} - \delta_{tc}
+\end{equation}
+\emph{from the PGG centered around them}.
+In practice, of course, they will take part in $k$ additional PGGs in which they are \emph{not} the focal individual and receive a payoff accordingly.
+This is important.
+So the total payoff will be something like
+\begin{equation}
+    P_{s, \mathrm{total}} = P_s + \sum_{j=1}^k P_{s_j},
+\end{equation}
+where the second sum is from all the $j$ other PGGs in which the focal individual takes part.
+There's probably a more elegant way to write all this.
+Incidentally, \textbf{this is why we will not be able to use the pair approximation}.
+An individual's payoffs in each round depend not only on what their neighbors do but on what their \emph{neighbor's neighbors} do.
+Individuals one ``jump'' away from the focal individual contribute to a PGG from which said focal individual derives a payoff.
+
 \bibliographystyle{plainnat}
 \bibliography{notes_bib}
 \end{document}
