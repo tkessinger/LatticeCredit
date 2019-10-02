@@ -1,0 +1,47 @@
+{
+  "N":
+  {
+    "value": 25
+  },
+  "r":
+  {
+    "range":
+    {
+      "start": 1.0,
+      "stop": 8.0,
+      "length": 8
+    }
+  },
+  "z":
+  {
+    "value": [1.0, 2.0, 4.0, 8.0]
+  },
+  "v":
+  {
+    "value": [0.0, 0.1, 1.0, 10.0]
+  },
+  "κ":
+  {
+    "value": 0.1
+  },
+  "num_trials":
+  {
+    "value": 50
+  },
+  "focal_type":
+  {
+    "value": [0,1,2,3]
+  },
+  "num_gens":
+  {
+    "value": 500
+  },
+  "gen_cutoff":
+  {
+    "value": 250
+  },
+  "output":
+  {
+    "value": "output/test_focal_types_subtle.csv"
+  }
+}

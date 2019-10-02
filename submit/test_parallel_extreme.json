@@ -1,0 +1,47 @@
+{
+  "N":
+  {
+    "value": 50
+  },
+  "r":
+  {
+    "range":
+    {
+      "start": 3.0,
+      "stop": 6.0,
+      "length": 11
+    }
+  },
+  "z":
+  {
+    "value": [1.0, 4.0, 16.0]
+  },
+  "v":
+  {
+    "value": [0.0, 1.0, 4.0]
+  },
+  "κ":
+  {
+    "value": 0.1
+  },
+  "num_trials":
+  {
+    "value": 100
+  },
+  "focal_type":
+  {
+    "value": [0,1,2,3]
+  },
+  "num_gens":
+  {
+    "value": 500
+  },
+  "gen_cutoff":
+  {
+    "value": 250
+  },
+  "output":
+  {
+    "value": "output/test_focal_types_extreme_2.csv"
+  }
+}

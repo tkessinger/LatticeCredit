@@ -10,7 +10,7 @@ module LatticeCredit
     using Random
 
     export LatticeGame, LatticePopulation
-    export evolve_sync!, evolve_async!
+    export evolve_sync!, evolve_async!, randomize_lattice!
     export decompose_strategy, strategy_string
     export get_payoffs, get_payoffs_fast, get_group_payoffs
 
@@ -61,13 +61,21 @@ module LatticeCredit
             # see above for explanation of next line
             #rand_init = CartesianIndices(lattice)[randperm(N^2)[1:floor(Int64,N^2*init_freq)]]
             #[lattice[x] = true for x in rand_init]
-            lattice = rand(0:7, N, N)
+            lattice = zeros(Int64, N, N)
             neighbors = get_neighbors(lattice)
             neighbor_pairs = get_neighbor_pairs(lattice, neighbors)
             #fitnesses = zeros(Float64, N, N)
             fitnesses = get_all_payoffs(lattice, neighbors, game)
             return new(game, N, lattice, fitnesses, neighbors, neighbor_pairs, 1, verbose)
         end
+    end
+
+    function randomize_lattice!(
+        pop::LatticePopulation,
+        strategies::Array{Int64, 1}=collect(0:7)
+        )
+        pop.lattice = rand(strategies, size(pop.lattice))
+        pop.fitnesses = get_all_payoffs(pop.lattice, pop.neighbors, pop.game)
     end
 
     function decompose_strategy(
@@ -79,55 +87,6 @@ module LatticeCredit
         # smallest bit: shirk/payback
         return [Bool(strat ÷ 4), Bool(strat%4 ÷ 2), Bool(strat%4%2)]
     end
-
-    function who_pays(
-        pop::LatticePopulation
-        )
-        # borrowed from LatticeCoop: function for determining who pays transaction costs
-        # could easily be adapted if we decide to make lending binary
-        # i.e., allow each individual to issue only one loan
-        initiator = Dict{Array{CartesianIndex{2}, 1}, Bool}()
-        for (npi, neighbor_pair) in enumerate(pop.neighbor_pairs)
-            initiator[neighbor_pair] = rand(Bool)
-        end
-        return initiator
-    end
-
-    # function get_payoffs(
-    #     pop::LatticePopulation,
-    #     initiator::Dict{Array{CartesianIndex{2},1}, Bool}
-    #     )
-    #     # determine the payoff for every individual in the lattice
-    #     payoffs = zeros(size(pop.lattice))
-    #     for (i, indv) in enumerate(CartesianIndices(pop.lattice))
-    #         # iterate over each individual
-    #         tmp_payoffs = 0
-    #         lattice_val = pop.lattice[indv]
-    #         for (ni, neighbor) in enumerate(pop.neighbors[indv])
-    #             # iterate over all their neighbors
-    #             # get everyone's strategy
-    #             neighbor_val = pop.lattice[neighbor]
-    #             indv_strat = get_strategy(lattice_val)
-    #             neighbor_strat = get_strategy(neighbor_val)
-    #
-    #             # decide who has to pay the transaction cost
-    #             neighbor_pair = sort([indv, neighbor])
-    #             pay_cost = xor(initiator[neighbor_pair], issorted([indv, neighbor]))
-    #             tmp_payoff = transpose(indv_strat)*pop.game.A*neighbor_strat - pop.game.c*(pay_cost)
-    #
-    #             if pop.verbose
-    #                 #println("individual $(indv.I) has strategy $(strategy_string(indv_strat)) and ordering $(ordering[indv])")
-    #                 #println("neighbor $(neighbor.I) has strategy $(strategy_string(neighbor_strat)) and ordering $(ordering[neighbor])")
-    #                 println("individual should pay transaction cost: $pay_cost")
-    #                 println("payoff is $tmp_payoff")
-    #             end
-    #             tmp_payoffs += tmp_payoff
-    #         end
-    #         payoffs[indv] = tmp_payoffs
-    #         if pop.verbose println("individual $(indv.I) had net payoff $tmp_payoffs") end
-    #     end
-    #     return payoffs
-    # end
 
     function get_all_payoffs(
         lattice::Array{Int64, 2},
@@ -392,7 +351,9 @@ module LatticeCredit
         push!(strat, decomposed_strat[1] ? "cooperate" : "defect")
         push!(strat, decomposed_strat[2] ? "lend" : "hoard")
         push!(strat, decomposed_strat[3] ? "payback" : "shirk")
-        println("$(strat[1]) $(strat[2]) $(strat[3])")
+        strat_string = "$(strat[1]) $(strat[2]) $(strat[3])"
+        #println(strat_string)
+        return strat_string
     end
 
     function evolve_async!(
