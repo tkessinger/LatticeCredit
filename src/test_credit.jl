@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-## cost.jl
+## test_credit.jl
 ##
 ## Author: Taylor Kessinger <tkess@sas.upenn.edu>
 ## Iterate LatticeCredit over various values of r with no lending.

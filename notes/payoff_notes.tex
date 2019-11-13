@@ -88,9 +88,234 @@ Incidentally, \textbf{this is why we will not be able to use the pair approximat
 An individual's payoffs in each round depend not only on what their neighbors do but on what their \emph{neighbor's neighbors} do.
 Individuals one ``jump'' away from the focal individual contribute to a PGG from which said focal individual derives a payoff.
 
-Okay, let's carefully break this down a little more.
-An individual's payoff from the PGG \emph{in which they are focal} will be the above.
-An individual's payoff from the PGG \emph{in which they are not focal} will be
+\section*{Alternative: pairwise PGG with central lending}
+
+We now consider an alternative game: individuals play a PGG with their neighbors.
+They are lent capital by a central bank in order to do so.
+They can then pay the bank back or not.
+In this way, there are only two strategy bits: cooperate/defect and payback/shirk.
+Later we will introduce the complication that banks track individuals' behavior in the previous round and either increase the interest rate $z$ or decrease the loaned amount $v$ depending on whether they paid back loans or not.
+
+To improve notation slightly, let $s_{ij}$ be the $j$th bit of the $i$th individual's strategy (the first bit is cooperate/defect and the second is payback/shirk).
+Then the payoff for individual $1$ is
+\begin{equation}
+    \begin{split}
+    P_1 & = \frac{r v [ \delta_{s_{11} c} + \delta_{s_{21} c} ] }{2} - v\delta_{s_{11} c} - zv \delta_{s_{12} p}
+    \\
+    & = v \Big\{ \frac{r [\delta_{s_{11} c} + \delta_{s_{21} c} ] }{2} - \delta_{s_{11} c} - z \delta_{s_{12} p} \Big\}.
+    \end{split}
+\end{equation}
+In the top equation, the first summand is the payoff from the PGG, the second is the individual's investment into the PGG, and the third is their repayment to the bank.
+The second is just a rewrite that makes it clear the loaned amount $v$ is just an annoying prefactor.
+Just based on looking at these payoffs, it is not entirely obvious what should happen.
+One thing that is clear is that individuals should \emph{always} choose to shirk their loan obligations, as there is no incentive to pay them back.
+
+We can try to figure out what a bank will do if individuals have a bad reputation.
+Suppose the bank only tracks what happened in the last round.
+Let $\epsilon_i$ be $0$ if individual $i$ ``misbehaved'' in the previous round and $1$ if they didn't.
+(For now, we'll say that ``misbehaved'' means ``shirked''.)
+Then
+\begin{equation}
+    P_1 = v \Big\{ \frac{r [ (1-d\epsilon_1) \delta_{s_{11} c} + (1-d\epsilon_2) \delta_{s_{21} c} ] }{2} - (1-d\epsilon_1) \delta_{s_{11} c} - z (1-d\epsilon_1) \delta_{s_{12} p} \Big\},
+\end{equation}
+where $d$ is the amount by which the bank decrements the principal of the loan to non-payers.
+Here, again, it is not entirely obvious what ought to happen.
+In principle shirkers are more likely to have been shirkers in the previous round, so they should have lower fitnesses overall and thus be less likely to have imitators adopt their strategies.
+But this remains to be seen.
+
+Let's see if we can figure out what the payoff matrix looks like, independent of reputation.
+The type of the focal individual will be along the left.
+We have:
+\begin{equation}
+    P_{ij} = v
+    \begin{pmatrix}
+        0 & \frac{r}{2} & 0 & \frac{r}{2} \\
+        -z & \frac{r}{2} - z & -z & \frac{r}{2} - z \\
+        \frac{r}{2} - 1 & \frac{r}{2} - 1 & r - 1 & r - 1 \\
+        \frac{r}{2} - 1 - z & \frac{r}{2} - 1 - z  & r - 1 - z & r - 1 - z
+    \end{pmatrix}
+    \label{eq:PGG_lending}
+\end{equation}
+when an individual of type $i$ interacts with an individual of type $j$.
+A few things are obvious.
+First, being a shirker \emph{always} pays off.
+This probably helps explain why it's just about goddamned impossible to get individuals to pay the bank back, absent some kind of punishment mechanism.
+Otherwise, the matrix looks an awful lot like a pairwise PGG, in which
+\begin{equation}
+    P_{ij} = v
+    \begin{pmatrix}
+        0 & \frac{r}{2} \\
+        \frac{r}{2} - 1 & r - 1
+    \end{pmatrix}.
+    \label{eq:PGG_no_lending}
+\end{equation}
+Equation \ref{eq:PGG_no_lending} probably helps explain why, in simulations (shown later), $r > 2$ is the cutoff for cooperation to spread at all.
+When $r < 2$, defecting pays off.
+
+Let's consider what happens when reputation is based on payback and a community of type $3$ individuals, all of whom have good reputations, are encroached upon by a community of (say) type $2$ individuals with bad reputations.
+(The larger ``bit'' refers to cooperation/defection.
+The smaller ``bit'' refers to payback/shirk.)
+The payoff for a type $3$ individual with good type $3$ neighbors, with good reputations, will be $4v(r - z - 1)$.
+The payoff for a type $2$ individual with type $2$ neighbors, who have bad reputations, will be $4v(1-d)(r-1)$.
+So the condition for type $3$ clusters to dominate in the absence of persistent spatial structure is
+\begin{equation}
+    \begin{split}
+        r - z - 1 & > (1-d)(r-1) \\
+        & > r - 1 - rd + d \\
+        \therefore - z & > -rd + d \\
+        \therefore z & < d(r-1).
+    \end{split}
+\end{equation}
+Now let's consider invasion.
+The ``invasion'' payoffs $I_n$ for a type $2$ individual with $n$ type $2$ neighbors (with bad reputations) and $4-n$ type $3$ neighbors will depend on the amount of money in the pot.
+In general, an individual with a bad reputation contributes $v(1-d)$, and an individual with a good reputation contributes $v$.
+These are then evenly split, so in an interaction with a type $2$ player, the pot payoff will be $2rv(1-d)/2 = rv(1-d)$, but in an interaction with a type $3$ player, it will be $rv[(1-d) + 1]/2 = rv(1 - d/2)$.
+As a cooperator, the individual will then pay an additional $v$ for each interaction.
+So the overall payoff is
+\begin{equation}
+    \begin{split}
+        I_n & = v [nr(1-d) + (4-n)r(1 - \frac{d}{2}) - 4]\\
+        & = v[nr - nrd + 4r - 4r\frac{d}{2} - nr + nr\frac{d}{2} - 4] \\
+        & = v[-nr\frac{d}{2} + 4(r\{1 - \frac{d}{2}\} - 1)],
+    \end{split}
+    \label{eq:I_n}
+\end{equation}
+which I'm sure can be simplified in some useful way.
+For a type $3$ individual with (let's say) $m$ type $2$ neighbors and $4 - m$ type $3$ neighbors, the same payoffs will be dependent on what is in their pot.
+In an interaction with another type $3$ player, the pot payoff will be $rv$.
+In an interaction with a type $2$ player, it will be $rv(1-d/2)$.
+These individuals will then pay an additional cost of $(1 + z)v$.
+So the overall payoff $J_m$ is
+\begin{equation}
+    \begin{split}
+        J_m & = v[(4-m)r + mr(1 - \frac{d}{2}) - 4(1+z)] \\
+        & = v[4r - mr + mr - mr\frac{d}{2} - 4 - 4z] \\
+        & = v[- mr\frac{d}{2} + 4(r - 1 - z)]
+    \end{split}
+    \label{eq:J_m}
+\end{equation}
+We could possibly then consider the ``gains from flipping'', as well as what happens when a type $2$ individual (transiently) has a good reputation due to the bank taking its sweet time updating their records.
+In that case, the pot for a game with a type $2$ individual contains $rv(1 - d + 1)/2 = rv(2-d)/2 = rv(1-d/2)$, and for a game with a type $3$ individual it is simply $rv$.
+So the total payoffs $I^\prime_n$ become
+\begin{equation}
+    \begin{split}
+        I^\prime_n & = v [nr(1-\frac{d}{2} + (4-n)r - 4]\\
+        & = v[nr - nr\frac{d}{2} + 4r - nr - 4]\\
+        & = v[-nr\frac{d}{2} + 4(r - 1)].
+    \end{split}
+    \label{eq:Iprime_n}
+\end{equation}
+Let's briefly consider the payoff for a type $2$ individual surrounded by type $3$ individuals ($n = 0$).
+It is
+\begin{equation}
+    I_0 = 4v(r - r\frac{d}{2} - 1).
+\end{equation}
+A type $3$ neighbor ($m = 1$) will have fitness
+\begin{equation}
+    J_1 = v[- r\frac{d}{2} + 4(r - 1 - z)]
+\end{equation}
+Let's maybe back up for one second and consider the case of a graph of degree $k$.
+In that case, equation \ref{eq:I_n} becomes
+\begin{equation}
+    \begin{split}
+        I_n & = v [nr(1-d) + (k-n)r(1 - \frac{d}{2}) - k]\\
+        & = v[nr - nrd + kr - kr\frac{d}{2} - nr + nr\frac{d}{2} - k] \\
+        & = v[-nr\frac{d}{2} + k(r\{1 - \frac{d}{2}\} - 1)],
+    \end{split}
+\end{equation}
+equation \ref{eq:J_m} becomes
+\begin{equation}
+    \begin{split}
+        J_m & = v[(k-m)r + mr(1 - \frac{d}{2}) - k(1+z)] \\
+        & = v[kr - mr + mr - mr\frac{d}{2} - k - kz] \\
+        & = v[- mr\frac{d}{2} + k(r - 1 - z)],
+    \end{split}
+\end{equation}
+and equation \ref{eq:Iprime_n} becomes
+\begin{equation}
+    \begin{split}
+        I^\prime_n & = v [nr(1-\frac{d}{2} + (k-n)r - k]\\
+        & = v[nr - nr\frac{d}{2} + kr - nr - k]\\
+        & = v[-nr\frac{d}{2} + k(r - 1)].
+    \end{split}
+\end{equation}
+So
+\begin{equation}
+    I_0 = vk[r(1-\frac{d}{2}) - 1]
+\end{equation}
+and
+\begin{equation}
+    J_1 = v[-r\frac{d}{2} + k(r-1-z)].
+\end{equation}
+Thus, type $3$ fails to resist invasion by type $2$ given that
+\begin{equation}
+    \begin{split}
+        I_0 & > J_1 \\
+        vk[r(1-\frac{d}{2}) - 1] & > v[-r\frac{d}{2} + k(r-1-z)] \\
+        \therefore kr - kr\frac{d}{2} - k & > -r\frac{d}{2} + kr - k - kz \\
+        \therefore -kr\frac{d}{2} & > -r\frac{d}{2} - kz \\
+        \therefore -(k-1)r\frac{d}{2} & > -kz \\
+        \therefore (k-1)r\frac{d}{2} & < kz \\
+        \therefore \frac{k}{k-1}z & > \frac{rd}{2}.
+    \end{split}
+    \label{eq:2_invade_3}
+\end{equation}
+So, type $2$ invades more easily at high $z$, high $k/(k-1)$, low $r$, or low $d$.
+We should think about whether this makes sense.
+Intuitively, a higher $z$ should make it easier for type $2$ to invade, since type $2$ does not pay back loans.
+A lower $d$ should also make this easier, since a shirker will face less of a penalty this way.
+The effects of $r$ and $k$ are less obvious.
+
+We should now also consider what happens to a type $2$ individual whose reputation is transiently not updated.
+Type $3$ will fail to resist invasion given that
+\begin{equation}
+    \begin{split}
+        I^\prime_0 & > J_1 \\
+        vk(r-1) & > v[-r\frac{d}{2} + k(r-1-z)] \\
+        \therefore kr - k & > -r\frac{d}{2} + kr - k - kz \\
+        \therefore 0 & > -r\frac{d}{2} - kz \\
+        \therefore \frac{rd}{2} + kz & > 0 ,
+    \end{split}
+\end{equation}
+which is always true.
+So, transiently, type $2$ can \emph{always} aggress against type $3$.
+Finally, we should see whether type $3$ can invade type $2$.
+We have
+\begin{equation}
+    \begin{split}
+        J_k & > I_{k-1} \\
+        \therefore v[- kr\frac{d}{2} + k(r - 1 - z)] & > v[-(k-1)r\frac{d}{2} + k(r\{1 - \frac{d}{2}\} - 1)]
+        \\
+        \therefore -kr\frac{d}{2} + kr - k - kz & > -kr\frac{d}{2} + r\frac{d}{2} + kr - kr\frac{d}{2} - k \\
+        \therefore - kz & > (1-k)r\frac{d}{2} \\
+        \therefore \frac{k}{k-1}z & < \frac{rd}{2}.
+    \end{split}
+\end{equation}
+This looks suspiciously similar to equation \ref{eq:2_invade_3}, which I suppose is not terribly surprising.
+It's the transient behavior, when reputations are not yet updated, that makes this scenario interesting.
+We should consider $J^\prime_m$, the fitness of a type $3$ individual who was previously known to be a shirker.
+They will have $m$ interactions with type $2$ individuals, with whom the pot is $rv(1-d)$, and $k-m$ interactions with (updated) type $3$ individuals, with whom the pot is $rv(1-d/2)$.
+They will then pay a cost of $(1+z)v$.
+The total payoff becomes
+\begin{equation}
+    \begin{split}
+        J^\prime_m & = v[(k-m)r(1 - \frac{d}{2}) + mr(1-d) - k(1+z)] \\
+        & = v[kr - kr\frac{d}{2} - mr + mr\frac{d}{2} + mr - mrd - k - kz] \\
+        & = v[-mr\frac{d}{2} + k(r\{1-\frac{d}{2}\} - 1 - z)].
+    \end{split}
+\end{equation}
+So, the invasibility condition becomes
+\begin{equation}
+    \begin{split}
+        J^\prime_k & > I_{k-1} \\
+        \therefore v[-kr\frac{d}{2} + k(r\{1-\frac{d}{2}\} - 1 - z)] & > v[-(k-1)r\frac{d}{2} + k(r\{1 - \frac{d}{2}\} - 1)]
+        \\
+        \therefore -kr\frac{d}{2} + kr - kr\frac{d}{2} - k - kz & > -kr\frac{d}{2} + r\frac{d}{2} + kr - kr\frac{d}{2} - k \\
+        \therefore - kz & > \frac{rd}{2},
+    \end{split}
+\end{equation}
+which never happens.
+Type $3$ \emph{cannot} invade under these conditions.
 
 \bibliographystyle{plainnat}
 \bibliography{notes_bib}

@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-## cost.jl
+## test_payoffs.jl
 ##
 ## Author: Taylor Kessinger <tkess@sas.upenn.edu>
 ## Test LatticeCredit payoff function.
